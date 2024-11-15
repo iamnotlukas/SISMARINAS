@@ -1,0 +1,96 @@
+/* Resetando margens e padding para um layout limpo */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Corpo da página */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Container principal */
+.login-container {
+  background-color: #fff;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+/* Logo da Marinha */
+.login-container img {
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+/* Título */
+h2 {
+  color: #0056b3;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Estilo do formulário */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Labels */
+form label {
+  text-align: left;
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 5px;
+}
+
+/* Inputs */
+form input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Botão de envio */
+form button {
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #0056b3;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Efeito hover no botão */
+form button:hover {
+  background-color: #003d80;
+}
+
+/* Rodapé */
+h5 {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 20px;
+}
+
+/* Mensagens de erro */
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}

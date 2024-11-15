@@ -1,0 +1,66 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4; /* Cor de fundo suave */
+  margin: 0;
+  padding: 0;
+}
+
+.registro-container {
+  max-width: 500px; /* Largura máxima do container */
+  margin: 50px auto; /* Centraliza o container na página */
+  background-color: #ffffff; /* Cor de fundo do container */
+  padding: 20px; /* Espaçamento interno */
+  border-radius: 8px; /* Bordas arredondadas */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+h2 {
+  text-align: center; /* Centraliza o título */
+  color: #0056b3; /* Cor do título */
+}
+
+form {
+  display: flex; /* Flexbox para alinhar elementos */
+  flex-direction: column; /* Alinha elementos na coluna */
+}
+
+label {
+  margin-bottom: 5px; /* Espaçamento abaixo do label */
+}
+
+input[type="text"] {
+  padding: 10px; /* Espaçamento interno */
+  margin-bottom: 15px; /* Espaçamento abaixo do campo */
+  border: 1px solid #ccc; /* Bordas do campo */
+  border-radius: 4px; /* Bordas arredondadas */
+}
+
+button {
+  padding: 10px; /* Espaçamento interno do botão */
+  background-color: #0056b3; /* Cor de fundo do botão */
+  color: #ffffff; /* Cor do texto do botão */
+  border: none; /* Sem borda */
+  border-radius: 4px; /* Bordas arredondadas */
+  cursor: pointer; /* Muda o cursor ao passar o mouse */
+  font-size: 16px; /* Tamanho da fonte */
+  margin: 10px 0;
+}
+
+button:hover {
+  background-color: #004494; /* Cor de fundo do botão ao passar o mouse */
+}
+
+.error {
+  color: red; /* Cor do texto de erro */
+  text-align: center; /* Centraliza a mensagem de erro */
+  margin-top: 10px; /* Espaçamento acima da mensagem */
+}
+
+h3 {
+  margin-top: 20px; /* Espaçamento acima do subtítulo */
+  color: #333; /* Cor do subtítulo */
+}
+
+p {
+  margin: 5px 0; /* Margem acima e abaixo do parágrafo */
+}

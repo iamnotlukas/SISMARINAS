@@ -1,0 +1,73 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+
+h3 {
+  text-align: center;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #007BFF; /* Cor de fundo dos cabeçalhos */
+  color: white;
+}
+
+/* Ajusta a largura das colunas específicas */
+td:nth-child(6), /* Data de Nascimento */
+td:nth-child(7) { /* Hora de Registro */
+  width: 30px; /* A largura será apenas o conteúdo */
+}
+
+td:nth-child(4){
+  width: 40px; /* A largura será apenas o conteúdo */
+
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2; /* Cor de fundo para linhas pares */
+}
+
+tr:hover {
+  background-color: #ddd; /* Cor de fundo ao passar o mouse */
+}
+
+.error {
+  color: red;
+  text-align: center;
+  font-weight: bold;
+}
+
+
+.btn-voltar {
+  display: inline-block; /* Para o botão se comportar como um bloco */
+  padding: 10px 20px; /* Espaçamento interno */
+  margin: 10px auto; /* Margem superior/inferior de 10px e centralização horizontal */
+  background-color: #007BFF; /* Cor de fundo azul */
+  color: white; /* Cor do texto branco */
+  border: none; /* Remove a borda padrão */
+  border-radius: 5px; /* Bordas arredondadas */
+  font-size: 16px; /* Tamanho da fonte */
+  cursor: pointer; /* Muda o cursor para pointer ao passar o mouse */
+  text-align: center; /* Centraliza o texto */
+  text-decoration: none; /* Remove o sublinhado do texto */
+  transition: background-color 0.3s ease; /* Efeito de transição na cor de fundo */
+}
+
+.btn-voltar:hover {
+  background-color: #0056b3; /* Cor de fundo quando o mouse está sobre o botão */
+}
