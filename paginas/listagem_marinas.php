@@ -91,6 +91,7 @@ else {
                     <th>TIPO</th>
                     <th>OBSERVAÇÃO</th>
                     <th>STATUS</th>
+                    <th>AÇÕES</th> <!-- Nova coluna para ações -->
                 </tr>
                 <?php foreach ($embarcacoes as $embarcacao): ?>
                     <tr>
@@ -100,6 +101,10 @@ else {
                         <td><?php echo $embarcacao['observacao']; ?></td>
                         <td class="<?php echo ($embarcacao['status'] === 'ILEGAL') ? 'ilegal' : ''; ?>">
                             <?php echo strtoupper($embarcacao['status']); ?>
+                        </td>
+                        <td>
+                            <!-- Botão de Alterar Dados -->
+                            <a href="editar_emb.php?id=<?php echo $embarcacao['id']; ?>" class="edit-btn">Alterar Dados</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -130,58 +135,17 @@ else {
                         <td class="<?php echo $linha_expirada; ?>"><?php echo $data_formatada; ?></td>
                         <td>
                             <a href="listagem_marinas.php?id_marina=<?php echo $marina['id']; ?>">Ver Embarcações</a> |
-                            <button class="edit-btn" onclick="showEditForm(<?php echo $marina['id']; ?>)">Alterar Dados</button>
+                            <a href="editar_marina.php?id_marina=<?php echo $marina['id']; ?>" class="edit-btn">Alterar Dados</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </table>
-
-            <!-- Formulário de Edição -->
-            <div class="edit-form" id="edit-form">
-                <h3>Alterar Dados da Marina</h3>
-                <form method="POST" action="upgrade.php">
-                    <input type="hidden" name="id_marina" id="edit-id-marina">
-                    <label for="edit-nome">Nome da Marina:</label>
-                    <input type="text" id="edit-nome" name="nome" required>
-
-                    <label for="edit-cnpj">CNPJ:</label>
-                    <input type="text" id="edit-cnpj" name="cnpj" maxlength="18" required>
-
-                    <label for="edit-endereco">Endereço:</label>
-                    <input type="text" id="edit-endereco" name="endereco" required>
-
-                    <label for="edit-dt_validade">Data de Validade:</label>
-                    <input type="date" id="edit-dt_validade" name="dt_validade" required>
-
-                    <button type="submit">Salvar</button>
-                    <button type="button" onclick="hideEditForm()">Cancelar</button>
-                </form>
-            </div>
         <?php endif; ?>
+
         <div class="button" style="margin: 0 auto; display: grid;">
             <a href="op.php" id="voltar">Voltar</a>      
         </div>
         <h5>Desenvolvido por MN-RC DIAS 24.0729.23</h5>
     </div>
-
-    <script>
-        function showEditForm(id) {
-            // Preenche os campos do formulário com os dados da marina
-            const marinaData = <?php echo json_encode($marinas); ?>;
-            const marina = marinaData.find(item => item.id === id);
-
-            document.getElementById('edit-id-marina').value = marina.id;
-            document.getElementById('edit-nome').value = marina.nome;
-            document.getElementById('edit-cnpj').value = marina.cnpj;
-            document.getElementById('edit-endereco').value = marina.endereco;
-            document.getElementById('edit-dt_validade').value = marina.dt_validade;
-
-            document.getElementById('edit-form').style.display = 'block';
-        }
-
-        function hideEditForm() {
-            document.getElementById('edit-form').style.display = 'none';
-        }
-    </script>
 </body>
 </html>

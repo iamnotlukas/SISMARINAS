@@ -11,23 +11,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contato = $_POST['contato'];
     $dt_validade = $_POST['dt_validade'];
 
-    // Prepara a consulta SQL para inserir os dados no banco de dados
-    $query = "INSERT INTO marinas (nome, cnpj, endereco, contato, dt_validade) 
-              VALUES (:nome, :cnpj, :endereco, :contato, :dt_validade)";
-    $stmt = $conexao->prepare($query);
-    
-    // Faz o bind dos parâmetros
-    $stmt->bindParam(':nome', $nome);
+    // Verifica se o CNPJ já existe no banco de dados
+    $checkQuery = "SELECT COUNT(*) FROM marinas WHERE cnpj = :cnpj";
+    $stmt = $conexao->prepare($checkQuery);
     $stmt->bindParam(':cnpj', $cnpj);
-    $stmt->bindParam(':endereco', $endereco);
-    $stmt->bindParam(':contato', $contato);
-    $stmt->bindParam(':dt_validade', $dt_validade);
+    $stmt->execute();
+    $count = $stmt->fetchColumn();
 
-    // Executa a consulta e verifica se a inserção foi bem-sucedida
-    if ($stmt->execute()) {
-        echo "<script>alert('Marina cadastrada com sucesso!'); window.location.href = 'listagem_marinas.php';</script>";
+    if ($count > 0) {
+        // Caso o CNPJ já exista, exibe a mensagem de erro
+        $erro = "CNPJ já usado.";
     } else {
-        $erro = "Erro ao cadastrar a marina.";
+        // Prepara a consulta SQL para inserir os dados no banco de dados
+        $query = "INSERT INTO marinas (nome, cnpj, endereco, contato, dt_validade) 
+                  VALUES (:nome, :cnpj, :endereco, :contato, :dt_validade)";
+        $stmt = $conexao->prepare($query);
+
+        // Faz o bind dos parâmetros
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':cnpj', $cnpj);
+        $stmt->bindParam(':endereco', $endereco);
+        $stmt->bindParam(':contato', $contato);
+        $stmt->bindParam(':dt_validade', $dt_validade);
+
+        // Executa a consulta e verifica se a inserção foi bem-sucedida
+        if ($stmt->execute()) {
+            // Configura a mensagem de sucesso para ser exibida no HTML
+            $successMessage = "Marina Cadastrada com Sucesso!";
+        } else {
+            // Caso não seja bem-sucedido, atribui uma mensagem de erro genérico
+            $erro = "Erro ao cadastrar a marina.";
+        }
     }
 }
 ?>
@@ -49,7 +63,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             valor = valor.replace(/(\d{4})(\d)/, "$1-$2");
             input.value = valor.substring(0, 18); // Limita ao comprimento do CNPJ com máscara
         }
+
+        // Redireciona após a exibição da mensagem
+        function redirectToOp() {
+            setTimeout(function() {
+                window.location.href = 'op.php';
+            }, 2000); // Ajuste o tempo de redirecionamento (2 segundos)
+        }
     </script>
+    <style>
+        /* Estilo para a mensagem de sucesso */
+        .success-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #007BFF;
+            font-size: 30px;
+            z-index: 9999;
+            font-weight: bold;
+            text-shadow: 
+                2px 2px 0px #ffffff,   /* Borda superior e à direita */
+                -2px -2px 0px #ffffff, /* Borda inferior e à esquerda */
+                2px -2px 0px #ffffff,  /* Borda inferior e à direita */
+                -2px 2px 0px #ffffff;  /* Borda superior e à esquerda */
+        }
+
+        /* Estilo para a mensagem de erro */
+        .error {
+            color: red;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
@@ -74,12 +125,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Cadastrar</button>
             <h5>Desenvolvido por MN-RC DIAS 24.0729.23</h5>
         </form>
-        <?php
-        // Exibe a mensagem de erro, se houver
-        if (isset($erro)) {
-            echo '<p class="error">' . $erro . '</p>';
-        }
-        ?>
+
+        <!-- Exibe a mensagem de erro, se houver -->
+        <?php if (isset($erro)): ?>
+            <p class="error"><?php echo $erro; ?></p>
+        <?php endif; ?>
     </div>
+
+    <!-- Exibe a mensagem de sucesso, se houver -->
+    <?php if (isset($successMessage)): ?>
+        <div class="success-message">
+            <?php echo $successMessage; ?>
+            <script>
+                redirectToOp(); // Chama a função para redirecionar após 2 segundos
+            </script>
+        </div>
+    <?php endif; ?>
 </body>
 </html>
