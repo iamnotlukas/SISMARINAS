@@ -82,7 +82,7 @@ else {
         <h2>LISTAGEM DE MARINAS</h2>
 
         <?php if ($id_marina): ?>
-            <h3>Embarcações na Marina <?php echo $marina['nome']; ?></h3>
+            <h3>Embarcações na Marina "<?php echo $marina['nome']; ?>"</h3>
             <h4 style="text-align:center; margin-bottom:20px;">Total de Embarcações/Motoaquáticas: <?php echo $total_embarcacoes; ?></h4>
             <table>
                 <tr>

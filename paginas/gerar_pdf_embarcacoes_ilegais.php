@@ -21,18 +21,15 @@ $pdf->setPrintHeader(false);
 $pdf->AddPage();
 
 // Adicionando as imagens no topo com largura reduzida, mantendo proporção
-$pdf->Image('../imagens/cpsp.jpg', 15, 8, 20, 0, 'JPG'); // Imagem à esquerda, largura ajustada para 40
-$pdf->Image('../imagens/newMarinha.jpg', 175, 8, 20, 0, 'JPG'); // Imagem à direita, largura ajustada para 40
+$pdf->Image('../imagens/cpsp.jpg', 15, 8, 20, 0, 'JPG'); // Imagem à esquerda
+$pdf->Image('../imagens/newMarinha.jpg', 175, 11, 20, 0, 'JPG'); // Imagem à direita
 
 // Título do documento
 $pdf->SetFont('Helvetica', 'B', 18);
-$pdf->Cell(0, 10, 'Embarcações Ilegais de Todas as Marinas', 0, 1, 'C');
+$pdf->Cell(0, 10, 'RELAÇÃO DE EMB E/OU MTA ILEGAIS', 0, 1, 'C');
 
 // Adiciona uma linha de separação
 $pdf->Ln(11);
-
-// Define a fonte para o corpo do documento
-$pdf->SetFont('Helvetica', '', 12);
 
 // Consulta para obter as embarcações ilegais
 $query = "
@@ -51,21 +48,22 @@ $pdf->SetFillColor(0, 102, 204); // Cor de fundo azul para os cabeçalhos
 $pdf->SetTextColor(255, 255, 255); // Cor do texto branco
 
 // Ajuste das larguras das colunas para preencher mais a página
-$widths = [60, 50, 80]; // Ajustar largura das colunas para a tabela preencher mais a página
+$widths = [60, 50, 80]; // Largura das colunas
 
-$pdf->Cell($widths[0], 10, 'Nome da Embarcação', 1, 0, 'C', 1); // Largura ajustada
-$pdf->Cell($widths[1], 10, 'N° de Inscrição', 1, 0, 'C', 1); // Largura ajustada
-$pdf->Cell($widths[2], 10, 'Marina', 1, 1, 'C', 1); // Largura ajustada
+// Cabeçalhos da tabela
+$pdf->Cell($widths[0], 8, 'Nome da Embarcação', 1, 0, 'C', 1); // Altura reduzida para 8
+$pdf->Cell($widths[1], 8, 'N° de Inscrição', 1, 0, 'C', 1); // Altura reduzida para 8
+$pdf->Cell($widths[2], 8, 'Marina', 1, 1, 'C', 1); // Altura reduzida para 8
 
 // Resetando a cor do texto para o corpo
 $pdf->SetTextColor(0, 0, 0); // Texto preto
 
 // Corpo da tabela com os dados das embarcações ilegais
-$pdf->SetFont('Helvetica', '', 12);
+$pdf->SetFont('Helvetica', '', 10); // Fonte menor para o corpo da tabela
 foreach ($embarcacoes as $embarcacao) {
-    $pdf->Cell($widths[0], 10, $embarcacao['embarcacao_nome'], 1, 0, 'C');
-    $pdf->Cell($widths[1], 10, $embarcacao['numero_serie'], 1, 0, 'C');
-    $pdf->Cell($widths[2], 10, $embarcacao['marina_nome'], 1, 1, 'C');
+    $pdf->Cell($widths[0], 6, $embarcacao['embarcacao_nome'], 1, 0, 'C'); // Altura reduzida para 6
+    $pdf->Cell($widths[1], 6, $embarcacao['numero_serie'], 1, 0, 'C'); // Altura reduzida para 6
+    $pdf->Cell($widths[2], 6, $embarcacao['marina_nome'], 1, 1, 'C'); // Altura reduzida para 6
 }
 
 // Adiciona uma linha no final

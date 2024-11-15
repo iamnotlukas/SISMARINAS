@@ -5,69 +5,97 @@ require_once('../tcpdf/tcpdf.php'); // Caminho para o arquivo TCPDF
 include '../ConexaoBanco/conexao.php';
 
 // Cria uma instância do objeto TCPDF
-$pdf = new TCPDF();
+class MYPDF extends TCPDF {
+    public function Header() {
+        // Adiciona logos nas laterais
+        $this->Image('../imagens/cpsp.jpg', 15, 8, 20, 0, 'JPG'); // Imagem à esquerda
+        $this->Image('../imagens/newMarinha.jpg', 175, 11, 20, 0, 'JPG'); // Imagem à direita
 
-// Definições do PDF
+        // Título do documento
+        $this->SetFont('Helvetica', 'B', 18);
+        $this->Ln(11);
+        $this->Cell(0, 10, 'RELAÇÃO DE MARINAS CADASTRADAS', 0, 1, 'C');
+    }
+
+    public function Footer() {
+        $this->SetY(-15);
+        $this->SetFont('Helvetica', 'I', 8);
+        $this->Cell(0, 10, 'Página ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 0, 'C');
+    }
+}
+
+$pdf = new MYPDF();
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('MN-RC DIAS');
 $pdf->SetTitle('Listagem de Marinas');
-$pdf->SetSubject('Relatório de Marinas');
 $pdf->SetMargins(10, 15, 10); // Margens laterais reduzidas
-$pdf->setPrintHeader(false);
-
-$pdf->SetAutoPageBreak(TRUE, 15);
+$pdf->SetAutoPageBreak(true, 20);
 $pdf->AddPage();
+$pdf->Ln(24);
 
-// Adicionando as imagens no topo com largura reduzida, mantendo proporção
-$pdf->Image('../imagens/cpsp.jpg', 15, 8, 20, 0, 'JPG'); // Imagem à esquerda, largura ajustada para 40
-$pdf->Image('../imagens/newMarinha.jpg', 175, 8, 20, 0, 'JPG'); // Imagem à direita, largura ajustada para 40
-
-// Título do documento
-$pdf->SetFont('Helvetica', 'B', 18);
-$pdf->Cell(0, 10, 'Listagem de Marinas Cadastradas', 0, 1, 'C');
-
-// Adiciona uma linha de separação
-$pdf->Ln(10);
-
-// Define a fonte para o corpo do documento
-$pdf->SetFont('Helvetica', '', 10);
-
-// Consulta para obter as marinas cadastradas, excluindo a marina 'EMB / MTA NÃO GARAGIADAS'
+// Consulta para obter as marinas cadastradas, excluindo a marina "EMB / MTA NÃO GARAGIADAS"
 $query = "SELECT nome, cnpj, endereco FROM marinas WHERE nome != 'EMB / MTA NÃO GARAGIADAS'";
 $stmt = $conexao->prepare($query);
 $stmt->execute();
 $marinas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Estilo para os cabeçalhos da tabela
-$pdf->SetFont('Helvetica', 'B', 12);
-$pdf->SetFillColor(0, 102, 204); // Cor de fundo azul para os cabeçalhos
-$pdf->SetTextColor(255, 255, 255); // Cor do texto branco
+// Configuração do estilo da tabela
+$html = '
+<style>
+    table {
+        font-size: 10px; /* Fonte do corpo */
+        width: 100%; /* Certifica-se de que a tabela preencha toda a largura */
+        border-collapse: collapse;
+    }
+    th {
+        background-color: #0066cc; /* Cor azul no cabeçalho */
+        color: #ffffff; /* Texto branco */
+        text-align: center;
+        padding: 5px;
+    }
+    td {
+        text-align: center;
+        padding: 5px;
+    }
+    th:nth-child(1) { width: 50%; } /* Nome da Marina */
+    th:nth-child(2) { width: 35%; } /* Endereço */
+    th:nth-child(3) { width: 15%; } /* CNPJ */
+</style>
 
-// Ajustando as larguras das células para que fiquem mais balanceadas
-$largura_total = 180; // O total disponível para as três colunas é 180
-$largura_nome = 100;  // A coluna "Nome da Marina" ocupará 100
-$largura_endereco = 40; // A coluna "Endereço" ocupará 40
-$largura_cnpj = 50; // A coluna "CNPJ" foi aumentada para 50
+<table border="1">
+    <thead>
+        <tr>
+            <th>Nome da Marina</th>
+            <th>Endereço</th>
+            <th style="width:fit-content;">CNPJ</th>
+        </tr>
+    </thead>
+    <tbody>';
 
-// Definindo as células com as larguras ajustadas
-$pdf->Cell($largura_nome, 10, 'Nome da Marina', 1, 0, 'C', 1); // 1 para o preenchimento
-$pdf->Cell($largura_endereco, 10, 'Cidade', 1, 0, 'C', 1); // 1 para o preenchimento
-$pdf->Cell($largura_cnpj, 10, 'CNPJ', 1, 1, 'C', 1); // 1 para o preenchimento
-
-// Resetando a cor do texto para o corpo
-$pdf->SetTextColor(0, 0, 0); // Texto preto
-
-// Corpo da tabela com os dados das marinas
-$pdf->SetFont('Helvetica', '', 12);
-foreach ($marinas as $marina) {
-    $pdf->Cell($largura_nome, 10, $marina['nome'], 1, 0, 'C');
-    $pdf->Cell($largura_endereco, 10, $marina['endereco'], 1, 0, 'C');
-    $pdf->Cell($largura_cnpj, 10, $marina['cnpj'], 1, 1, 'C');
+// Preenchendo a tabela com dados
+if ($marinas) {
+    foreach ($marinas as $marina) {
+        $html .= '
+        <tr>
+            <td>' . htmlspecialchars($marina['nome']) . '</td>
+            <td>' . htmlspecialchars($marina['endereco']) . '</td>
+            <td>' . htmlspecialchars($marina['cnpj']) . '</td>
+        </tr>';
+    }
+} else {
+    $html .= '
+    <tr>
+        <td colspan="3" align="center">Não há marinas cadastradas.</td>
+    </tr>';
 }
 
-// Adiciona uma linha no final
-$pdf->Ln(5);
+$html .= '
+    </tbody>
+</table>';
 
-// Exibe o PDF no navegador
+// Escrevendo o conteúdo no PDF
+$pdf->writeHTML($html, true, false, true, false, '');
+
+// Exibindo o PDF no navegador
 $pdf->Output('listagem_marinas.pdf', 'I');
 ?>
