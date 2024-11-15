@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastramento de Marina</title>
-    <link rel="stylesheet" href="../cssPaginas/cadastro.css">
+    <link rel="stylesheet" href="../cssPaginas/cadNew.css">
     <script>
         // Função para formatar o CNPJ enquanto o usuário digita
         function mascaraCNPJ(input) {

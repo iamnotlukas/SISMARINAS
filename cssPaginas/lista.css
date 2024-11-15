@@ -121,16 +121,17 @@ h5 {
 
 
 button{
-  color: #33f74d;
+  color: #166520;
   text-decoration: none;
   font-weight: bold;
   padding: 5px 10px;
-  border: 1px solid #33f74d;
+  border: 1px solid #166520;
   border-radius: 5px;
   transition: background-color 0.3s ease;
+  height: 30px;
 }
 
 button:hover{
-  background-color: #33f74d;
+  background-color: #166520;
   color: white;
 }

@@ -30,7 +30,7 @@ $pdf->Cell(0, 10, 'Listagem de Marinas Cadastradas', 0, 1, 'C');
 $pdf->Ln(10);
 
 // Define a fonte para o corpo do documento
-$pdf->SetFont('Helvetica', '', 12);
+$pdf->SetFont('Helvetica', '', 10);
 
 // Consulta para obter as marinas cadastradas, excluindo a marina 'EMB / MTA NÃO GARAGIADAS'
 $query = "SELECT nome, cnpj, endereco FROM marinas WHERE nome != 'EMB / MTA NÃO GARAGIADAS'";

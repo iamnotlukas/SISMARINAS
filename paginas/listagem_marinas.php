@@ -59,7 +59,7 @@ else {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listagem de Marinas</title>
-    <link rel="stylesheet" href="../cssPaginas/list.css">
+    <link rel="stylesheet" href="../cssPaginas/lista.css">
     <style>
         /* Estilo para texto com data expirada */
         .expired {
@@ -69,6 +69,11 @@ else {
         .ilegal {
             color: red; /* Cor do texto em vermelho para status ILEGAL */
             font-weight: bold;
+        }
+        /* Estilo para o formulário de edição */
+        .edit-form {
+            display: none; /* Inicialmente escondido */
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -125,11 +130,33 @@ else {
                         <td class="<?php echo $linha_expirada; ?>"><?php echo $data_formatada; ?></td>
                         <td>
                             <a href="listagem_marinas.php?id_marina=<?php echo $marina['id']; ?>">Ver Embarcações</a> |
-                            <button class="edit-btn" onclick="toggleEdit(<?php echo $marina['id']; ?>)">Alterar Dados</button>
+                            <button class="edit-btn" onclick="showEditForm(<?php echo $marina['id']; ?>)">Alterar Dados</button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </table>
+
+            <!-- Formulário de Edição -->
+            <div class="edit-form" id="edit-form">
+                <h3>Alterar Dados da Marina</h3>
+                <form method="POST" action="upgrade.php">
+                    <input type="hidden" name="id_marina" id="edit-id-marina">
+                    <label for="edit-nome">Nome da Marina:</label>
+                    <input type="text" id="edit-nome" name="nome" required>
+
+                    <label for="edit-cnpj">CNPJ:</label>
+                    <input type="text" id="edit-cnpj" name="cnpj" maxlength="18" required>
+
+                    <label for="edit-endereco">Endereço:</label>
+                    <input type="text" id="edit-endereco" name="endereco" required>
+
+                    <label for="edit-dt_validade">Data de Validade:</label>
+                    <input type="date" id="edit-dt_validade" name="dt_validade" required>
+
+                    <button type="submit">Salvar</button>
+                    <button type="button" onclick="hideEditForm()">Cancelar</button>
+                </form>
+            </div>
         <?php endif; ?>
         <div class="button" style="margin: 0 auto; display: grid;">
             <a href="op.php" id="voltar">Voltar</a>      
@@ -138,22 +165,22 @@ else {
     </div>
 
     <script>
-        // Função para alternar entre visualizar e editar os dados
-        function toggleEdit(id) {
-            // Aqui você pode implementar o JavaScript para alternar a edição dos campos
-            // Exemplo de alteração de classe ou manipulação do DOM para mostrar campos editáveis
-            const editButtons = document.querySelectorAll('.edit-btn');
-            const actionButton = document.querySelector(`#edit-${id}`);
-            
-            // Mudando o texto do botão de "Alterar Dados" para "Salvar"
-            if (actionButton.innerText === 'Alterar Dados') {
-                actionButton.innerText = 'Salvar';
-                actionButton.style.backgroundColor = 'green';
-            } else {
-                // Aqui você pode incluir o código para salvar os dados no banco
-                actionButton.innerText = 'Alterar Dados';
-                actionButton.style.backgroundColor = 'initial';
-            }
+        function showEditForm(id) {
+            // Preenche os campos do formulário com os dados da marina
+            const marinaData = <?php echo json_encode($marinas); ?>;
+            const marina = marinaData.find(item => item.id === id);
+
+            document.getElementById('edit-id-marina').value = marina.id;
+            document.getElementById('edit-nome').value = marina.nome;
+            document.getElementById('edit-cnpj').value = marina.cnpj;
+            document.getElementById('edit-endereco').value = marina.endereco;
+            document.getElementById('edit-dt_validade').value = marina.dt_validade;
+
+            document.getElementById('edit-form').style.display = 'block';
+        }
+
+        function hideEditForm() {
+            document.getElementById('edit-form').style.display = 'none';
         }
     </script>
 </body>
