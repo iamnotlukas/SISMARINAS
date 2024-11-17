@@ -123,6 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="date" id="dt_validade" name="dt_validade" required>
 
             <button type="submit">Cadastrar</button>
+            <button onclick="window.location.href='op.php';">Voltar</button>
             <h5>Desenvolvido por MN-RC DIAS 24.0729.23</h5>
         </form>
 

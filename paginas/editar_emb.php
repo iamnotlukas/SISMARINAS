@@ -77,23 +77,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         /* Estilo para a mensagem de sucesso */
         .success-message {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #007BFF;
-            font-size: 30px;
-            z-index: 9999;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            border: 2px solid #28a745;
+            padding: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            font-size: 18px;
+            color: #28a745;
             font-weight: bold;
-            text-shadow: 
-                2px 2px 0px #ffffff,   /* Borda superior e à direita */
-                -2px -2px 0px #ffffff, /* Borda inferior e à esquerda */
-                2px -2px 0px #ffffff,  /* Borda inferior e à direita */
-                -2px 2px 0px #ffffff;  /* Borda superior e à esquerda */
+            text-align: center;
+            z-index: 9999;
         }
 
         /* Estilo para a mensagem de erro */

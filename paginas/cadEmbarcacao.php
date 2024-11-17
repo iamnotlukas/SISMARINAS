@@ -137,20 +137,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="date" id="data_validade" name="data_validade" required>
 
             <button type="submit">Cadastrar</button>
+            <button onclick="window.location.href='op.php';">Voltar</button>
+            <h5 style="text-align:center;">Desenvolvido por MN-RC DIAS 24.0729.23</h5>
+
         </form>
         <?php if (isset($erro)): ?>
             <p class="error"><?php echo $erro; ?></p>
-        <?php endif; ?>
-    </div>
-
-    <!-- Exibe a mensagem de sucesso, se houver -->
-    <?php if (isset($successMessage)): ?>
-        <div class="success-message">
-            <?php echo $successMessage; ?>
+            <?php endif; ?>
         </div>
-        <script>
-            redirectToListagem();
-        </script>
+        
+        <!-- Exibe a mensagem de sucesso, se houver -->
+        <?php if (isset($successMessage)): ?>
+            <div class="success-message">
+                <?php echo $successMessage; ?>
+            </div>
+            <script>
+                redirectToListagem();
+                </script>
     <?php endif; ?>
+
 </body>
 </html>
