@@ -10,6 +10,16 @@ if (!isset($_SESSION['autenticado']) || $_SESSION['autenticado'] !== true) {
 // Inclui o arquivo de conexão com o banco de dados
 include '../ConexaoBanco/conexao.php';
 
+// Função para atualizar o status para "ILEGAL" se a data de vencimento tiver expirado
+function atualizarStatusIlegal($conexao) {
+    $query = "UPDATE embarcacoes SET status = 'ILEGAL' WHERE dt_validade < CURDATE() AND status = 'LEGAL'";
+    $stmt = $conexao->prepare($query);
+    $stmt->execute();
+}
+
+// Atualiza os status antes de exibir as informações
+atualizarStatusIlegal($conexao);
+
 // Verifica se foi passado um ID de marina na URL
 $id_marina = isset($_GET['id_marina']) ? $_GET['id_marina'] : null;
 
@@ -28,15 +38,14 @@ if ($id_marina) {
     $stmt_count->execute();
     $total_embarcacoes = $stmt_count->fetch(PDO::FETCH_ASSOC)['total_embarcacoes'];
 
-    // Recupera o nome da marina, o CNPJ, a cidade e a data de validade para exibir no título
-    $query_marina = "SELECT nome, cnpj, endereco, dt_validade FROM marinas WHERE id = :id_marina";
+    // Recupera o nome da marina para exibir no título
+    $query_marina = "SELECT nome FROM marinas WHERE id = :id_marina";
     $stmt_marina = $conexao->prepare($query_marina);
     $stmt_marina->bindParam(':id_marina', $id_marina);
     $stmt_marina->execute();
     $marina = $stmt_marina->fetch(PDO::FETCH_ASSOC);
-}
-else {
-    // Exibe todas as marinas cadastradas e conta o total
+} else {
+    // Exibe todas as marinas cadastradas
     $query = "
         SELECT id, nome, cnpj, endereco, dt_validade 
         FROM marinas 
@@ -49,7 +58,7 @@ else {
     $stmt = $conexao->prepare($query);
     $stmt->execute();
     $marinas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $total_marinas = count($marinas); // Conta o total de marinas cadastradas
+    $total_marinas = count($marinas);
 }
 ?>
 
@@ -61,28 +70,20 @@ else {
     <title>Listagem de Marinas</title>
     <link rel="stylesheet" href="../cssPaginas/lista.css">
     <style>
-        /* Estilo para texto com data expirada */
         .expired {
-            color: red; /* Cor do texto em vermelho */
+            color: red;
+            font-weight: bold; /* Cor para itens expirados */
         }
-        /* Estilo para status ILEGAL */
         .ilegal {
-            color: red; /* Cor do texto em vermelho para status ILEGAL */
-            font-weight: bold;
-        }
-        /* Estilo para o formulário de edição */
-        .edit-form {
-            display: none; /* Inicialmente escondido */
-            margin-top: 20px;
+            color: red; /* Cor para status ilegal */
+            font-weight: bold; /* Deixar em negrito para destaque */
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2>LISTAGEM DE MARINAS</h2>
-
         <?php if ($id_marina): ?>
-            <h3>Embarcações na Marina "<?php echo $marina['nome']; ?>"</h3>
+            <h2>Embarcações na Marina "<?php echo $marina['nome']; ?>"</h2>
             <h4 style="text-align:center; margin-bottom:20px;">Total de Embarcações/Motoaquáticas: <?php echo $total_embarcacoes; ?></h4>
             <table>
                 <tr>
@@ -91,28 +92,31 @@ else {
                     <th>TIPO</th>
                     <th>OBSERVAÇÃO</th>
                     <th>STATUS</th>
-                    <th>AÇÕES</th> <!-- Nova coluna para ações -->
+                    <th>DATA DE VENCIMENTO</th>
+                    <th>AÇÕES</th>
                 </tr>
-                <?php foreach ($embarcacoes as $embarcacao): ?>
+                <?php foreach ($embarcacoes as $embarcacao): 
+                    $data_vencimento = $embarcacao['dt_validade'] ? new DateTime($embarcacao['dt_validade']) : null;
+                    $data_venc_formatada = $data_vencimento ? $data_vencimento->format('d/m/Y') : '---';
+                    $classe_expirada = ($data_vencimento && $data_vencimento < new DateTime()) ? 'expired' : '';
+                    $classe_status = (strtoupper($embarcacao['status']) === 'ILEGAL') ? 'ilegal' : '';
+                ?>
                     <tr>
-                        <td><?php echo $embarcacao['nome']; ?></td>
-                        <td><?php echo $embarcacao['numero_serie']; ?></td>
-                        <td><?php echo $embarcacao['tipo']; ?></td>
-                        <td><?php echo $embarcacao['observacao']; ?></td>
-                        <td class="<?php echo ($embarcacao['status'] === 'ILEGAL') ? 'ilegal' : ''; ?>">
-                            <?php echo strtoupper($embarcacao['status']); ?>
-                        </td>
+                        <td><?php echo htmlspecialchars($embarcacao['nome']); ?></td>
+                        <td><?php echo htmlspecialchars($embarcacao['numero_serie']); ?></td>
+                        <td><?php echo htmlspecialchars($embarcacao['tipo']); ?></td>
+                        <td><?php echo htmlspecialchars($embarcacao['observacao']); ?></td>
+                        <td class="<?php echo $classe_status; ?>"><?php echo strtoupper(htmlspecialchars($embarcacao['status'])); ?></td>
+                        <td class="<?php echo $classe_expirada; ?>"><?php echo $data_venc_formatada; ?></td>
                         <td>
-                            <!-- Botão de Alterar Dados -->
-                            <a href="editar_emb.php?id=<?php echo $embarcacao['id']; ?>" class="edit-btn">Alterar Dados</a>
+                            <a href="editar_emb.php?id=<?php echo $embarcacao['id']; ?>">Alterar Dados</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </table>
-            <br>
             <a href="listagem_marinas.php">Voltar para a listagem de marinas</a>
         <?php else: ?>
-            <h3>Total de Marinas Cadastradas: <?php echo $total_marinas; ?></h3>
+            <h2>Lista de Marinas</h2>
             <table>
                 <tr>
                     <th>NOME DA MARINA</th>
@@ -121,27 +125,26 @@ else {
                     <th>VAL. DO CERTIFICADO</th>
                     <th>AÇÃO</th>
                 </tr>
-                <?php
-                $hoje = new DateTime(); // Data atual
-                foreach ($marinas as $marina):
+                <?php foreach ($marinas as $marina): 
                     $data_validade = new DateTime($marina['dt_validade']);
-                    $data_formatada = $data_validade->format('d') . strtoupper($data_validade->format('M')) . $data_validade->format('Y'); // Formata a data para o formato 13DEZ2025
-                    $linha_expirada = ($data_validade < $hoje) ? 'expired' : ''; // Verifica se a data expirou
+                    $hoje = new DateTime();
+                    $linha_expirada = ($data_validade < $hoje) ? 'expired' : '';
                 ?>
                     <tr>
                         <td><?php echo $marina['nome']; ?></td>
                         <td><?php echo $marina['cnpj']; ?></td>
                         <td><?php echo $marina['endereco']; ?></td>
-                        <td class="<?php echo $linha_expirada; ?>"><?php echo $data_formatada; ?></td>
+                        <td class="<?php echo $linha_expirada; ?>">
+                            <?php echo $data_validade->format('d/m/Y'); ?>
+                        </td>
                         <td>
                             <a href="listagem_marinas.php?id_marina=<?php echo $marina['id']; ?>">Ver Embarcações</a> |
-                            <a href="editar_marina.php?id_marina=<?php echo $marina['id']; ?>" class="edit-btn">Alterar Dados</a>
+                            <a href="editar_marina.php?id_marina=<?php echo $marina['id']; ?>">Alterar Dados</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </table>
         <?php endif; ?>
-
         <div class="button" style="margin: 0 auto; display: grid;">
             <a href="op.php" id="voltar">Voltar</a>      
         </div>

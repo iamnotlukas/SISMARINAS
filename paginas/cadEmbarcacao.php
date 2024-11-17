@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $observacao = $_POST['observacao'];
     $proporcao_motor = $_POST['proporcao_motor'];
     $status = strtoupper($_POST['status']);
+    $data_validade = $_POST['data_validade']; // Captura a data de vencimento
 
     // Validações básicas
     if (strlen($numero_serie) < 1) {
@@ -20,11 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = "A observação não pode exceder 200 caracteres.";
     } elseif (!in_array($status, ['LEGAL', 'ILEGAL'])) {
         $erro = "Status inválido.";
+    } elseif (!$data_validade || !strtotime($data_validade)) {
+        $erro = "Data de validade inválida ou não preenchida.";
     } else {
         try {
             // Insere os dados no banco de dados
-            $query = "INSERT INTO embarcacoes (id_marina, nome, numero_serie, tipo, observacao, proporcao_motor, status) 
-                      VALUES (:id_marina, :nome, :numero_serie, :tipo, :observacao, :proporcao_motor, :status)";
+            $query = "INSERT INTO embarcacoes (id_marina, nome, numero_serie, tipo, observacao, proporcao_motor, status, dt_validade) 
+                      VALUES (:id_marina, :nome, :numero_serie, :tipo, :observacao, :proporcao_motor, :status, :data_validade)";
             $stmt = $conexao->prepare($query);
 
             $stmt->bindParam(':id_marina', $id_marina);
@@ -34,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindParam(':observacao', $observacao);
             $stmt->bindParam(':proporcao_motor', $proporcao_motor);
             $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':data_validade', $data_validade);
 
             if ($stmt->execute()) {
                 $successMessage = "EMB / MTA cadastrada com sucesso!";
@@ -128,6 +132,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <option value="LEGAL">LEGAL</option>
                 <option value="ILEGAL">ILEGAL</option>
             </select>
+
+            <label for="data_validade">Data de Vencimento:</label>
+            <input type="date" id="data_validade" name="data_validade" required>
 
             <button type="submit">Cadastrar</button>
         </form>

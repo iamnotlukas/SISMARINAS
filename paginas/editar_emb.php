@@ -24,9 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo = $_POST['tipo'];
     $observacao = $_POST['observacao'];
     $proporcao_motor = $_POST['proporcao_motor'];
+    $dt_validade = $_POST['dt_validade'];
+    $status = $_POST['status'];
 
     // Prepara a consulta SQL para atualizar os dados no banco de dados
-    $query = "UPDATE embarcacoes SET nome = :nome, numero_serie = :numero_serie, tipo = :tipo, observacao = :observacao, proporcao_motor = :proporcao_motor WHERE id = :id";
+    $query = "UPDATE embarcacoes SET 
+                nome = :nome, 
+                numero_serie = :numero_serie, 
+                tipo = :tipo, 
+                observacao = :observacao, 
+                proporcao_motor = :proporcao_motor,
+                dt_validade = :dt_validade,
+                status = :status
+              WHERE id = :id";
     $stmt = $conexao->prepare($query);
     
     // Faz o bind dos parâmetros
@@ -35,6 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':tipo', $tipo);
     $stmt->bindParam(':observacao', $observacao);
     $stmt->bindParam(':proporcao_motor', $proporcao_motor);
+    $stmt->bindParam(':dt_validade', $dt_validade);
+    $stmt->bindParam(':status', $status);
     $stmt->bindParam(':id', $id);
 
     // Executa a consulta e verifica se a atualização foi bem-sucedida
@@ -58,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function redirectToListagem() {
             setTimeout(function() {
                 window.location.href = 'listagem_marinas.php'; // Redireciona para a listagem das embarcações
-            }, 4000); // Ajuste o tempo de redirecionamento (2 segundos)
+            }, 4000); // Ajuste o tempo de redirecionamento
         }
     </script>
     <style>
@@ -112,6 +124,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <label for="proporcao_motor">Proporção do Motor:</label>
             <input type="text" id="proporcao_motor" name="proporcao_motor" value="<?php echo isset($embarcacao['proporcao_motor']) ? $embarcacao['proporcao_motor'] : ''; ?>" required>
+
+            <label for="dt_validade">Data de Validade:</label>
+            <input type="date" id="dt_validade" name="dt_validade" value="<?php echo isset($embarcacao['dt_validade']) ? $embarcacao['dt_validade'] : ''; ?>" required>
+
+            <label for="status">Status Legal:</label>
+            <select id="status" name="status" required>
+                <option value="LEGAL" <?php echo (isset($embarcacao['status']) && $embarcacao['status'] === 'LEGAL') ? 'selected' : ''; ?>>LEGAL</option>
+                <option value="ILEGAL" <?php echo (isset($embarcacao['status']) && $embarcacao['status'] === 'ILEGAL') ? 'selected' : ''; ?>>ILEGAL</option>
+            </select>
 
             <button type="submit">Atualizar</button>
             <h5>Desenvolvido por MN-RC DIAS 24.0729.23</h5>
