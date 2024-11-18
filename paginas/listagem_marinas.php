@@ -78,6 +78,8 @@ if ($id_marina) {
             color: red; /* Cor para status ilegal */
             font-weight: bold; /* Deixar em negrito para destaque */
         }
+
+        
     </style>
 </head>
 <body>
