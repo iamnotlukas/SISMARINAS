@@ -22,6 +22,6 @@ O sistema visa:
 - **Linguagem de Programação**: PHP
 - **Banco de Dados**: MySQL (com suporte a transações e integridade referencial)
 - **Frontend**: HTML5, CSS3, JavaScript
-- **Bibliotecas**: PDO para conexão segura ao banco de dados
+- **Bibliotecas**: PDO para conexão segura ao banco de dados e TCPDF para gerar os PDF
 - **Servidor Local**: XAMPP (ou semelhante)
 
