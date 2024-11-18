@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="login-container">
-        <img src="../imagens/logoMarinha.png" alt="Logo da Marinha" style="width: 60px;">
+        <img src="../imagens/SISMARINAS.png" alt="Logo da Marinha" style="width: 50%;">
         <h2>Cadastramento de Marina</h2>
         <form method="POST">
             <label for="nome">Nome da Marina:</label>

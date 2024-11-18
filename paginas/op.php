@@ -29,7 +29,19 @@ if (isset($_POST['delete'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DiasSmartSys - Opções do Administrador</title>
+    <link rel="stylesheet" href="../cssPaginas/op.css">
     <style>
+        .images-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .images-container img {
+            height: auto;
+        }
+
         li form button {
             display: block;
             text-decoration: none;
@@ -48,8 +60,9 @@ if (isset($_POST['delete'])) {
             background-color: #FF3D3F;
             color: white;
         }
+
+        
     </style>
-    <link rel="stylesheet" href="../cssPaginas/op.css">
     <script>
         function confirmDelete() {
             return confirm("Você tem certeza que deseja deletar todos os usuários?");
@@ -57,8 +70,15 @@ if (isset($_POST['delete'])) {
     </script>
 </head>
 <body>
+    <!-- Seção de imagens -->
+    <div class="images-container">
+        <img src="../imagens/newMarinha.jpg" style="width:150px;"  alt="Imagem à esquerda">
+        <img src="../imagens/SISMARINAS.png" alt="Imagem ao centro">
+        <img src="../imagens/cpsp.jpg" style="width:150px;" alt="Imagem à direita">
+    </div>
     <div class="op-container">
         <h2>Opções do Administrador</h2>
+
         <ul>
             <li><a href="listagem_marinas.php">Listar Marinas Cadastradas</a></li>
             <li><a href="cadastro.php">Cadastrar Marina</a></li>
@@ -68,7 +88,6 @@ if (isset($_POST['delete'])) {
             <li><a href="gerar_pdf_embarcacoes_ilegais.php">Gerar PDF EMB / MTA Ilegais</a></li>
         </ul>
         <h5 style="text-align:center;">Desenvolvido por MN-RC DIAS 24.0729.23</h5>
-
     </div>
 </body>
 </html>
