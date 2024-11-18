@@ -10,18 +10,6 @@ if (!isset($_SESSION['autenticado']) || $_SESSION['autenticado'] !== true) {
 // Conexão ao banco de dados
 include '../ConexaoBanco/conexao.php'; // Inclua a conexão
 
-// Verifica se a solicitação de deleção foi feita
-if (isset($_POST['delete'])) {
-    // Confirma se a deleção foi solicitada
-    try {
-        // Executa o DELETE para remover todos os registros
-        $stmt = $conexao->prepare("DELETE FROM registros");
-        $stmt->execute();
-        echo "<script>alert('Todos os registros foram deletados com sucesso.');</script>";
-    } catch (PDOException $e) {
-        echo "<script>alert('Erro ao deletar registros: " . $e->getMessage() . "');</script>";
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -61,7 +49,15 @@ if (isset($_POST['delete'])) {
             color: white;
         }
 
-        
+        body, html{
+            
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: rgb(29,0,255);
+            background: linear-gradient(0deg, rgba(29,0,255,1) 0%, rgba(255,255,255,1) 100%);
+            background-size: cover;
+        }
     </style>
     <script>
         function confirmDelete() {
@@ -72,9 +68,9 @@ if (isset($_POST['delete'])) {
 <body>
     <!-- Seção de imagens -->
     <div class="images-container">
-        <img src="../imagens/newMarinha.jpg" style="width:150px;"  alt="Imagem à esquerda">
+        <img src="../imagens/newMarinha.png" style="width:90px;"  alt="Imagem à esquerda">
         <img src="../imagens/SISMARINAS.png" alt="Imagem ao centro">
-        <img src="../imagens/cpsp.jpg" style="width:150px;" alt="Imagem à direita">
+        <img src="../imagens/cpsp.png" style="width:90px;" alt="Imagem à direita">
     </div>
     <div class="op-container">
         <h2>Opções do Administrador</h2>
