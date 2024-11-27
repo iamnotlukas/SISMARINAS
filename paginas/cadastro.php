@@ -48,99 +48,116 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastramento de Marina</title>
-    <link rel="stylesheet" href="../cssPaginas/cadNew.css">
-    <script>
-        // Função para formatar o CNPJ enquanto o usuário digita
-        function mascaraCNPJ(input) {
-            let valor = input.value.replace(/\D/g, ''); // Remove tudo que não é número
-            valor = valor.replace(/^(\d{2})(\d)/, "$1.$2");
-            valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
-            valor = valor.replace(/\.(\d{3})(\d)/, ".$1/$2");
-            valor = valor.replace(/(\d{4})(\d)/, "$1-$2");
-            input.value = valor.substring(0, 18); // Limita ao comprimento do CNPJ com máscara
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastramento de Marina</title>
+  <link rel="stylesheet" href="../cssPaginas/cadNew.css">
+  <script>
+  // Função para formatar o CNPJ enquanto o usuário digita
+  function mascaraCNPJ(input) {
+    let valor = input.value.replace(/\D/g, ''); // Remove tudo que não é número
+    valor = valor.replace(/^(\d{2})(\d)/, "$1.$2");
+    valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+    valor = valor.replace(/\.(\d{3})(\d)/, ".$1/$2");
+    valor = valor.replace(/(\d{4})(\d)/, "$1-$2");
+    input.value = valor.substring(0, 18); // Limita ao comprimento do CNPJ com máscara
+  }
 
-        // Redireciona após a exibição da mensagem
-        function redirectToOp() {
-            setTimeout(function() {
-                window.location.href = 'op.php';
-            }, 2000); // Ajuste o tempo de redirecionamento (2 segundos)
-        }
-    </script>
-    <style>
-        /* Estilo para a mensagem de sucesso */
-        .success-message {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #007BFF;
-            font-size: 30px;
-            z-index: 9999;
-            font-weight: bold;
-            text-shadow: 
-                2px 2px 0px #ffffff,   /* Borda superior e à direita */
-                -2px -2px 0px #ffffff, /* Borda inferior e à esquerda */
-                2px -2px 0px #ffffff,  /* Borda inferior e à direita */
-                -2px 2px 0px #ffffff;  /* Borda superior e à esquerda */
-        }
+  // Redireciona após a exibição da mensagem
+  function redirectToOp() {
+    setTimeout(function() {
+      window.location.href = 'op.php';
+    }, 2000); // Ajuste o tempo de redirecionamento (2 segundos)
+  }
+  </script>
+  <style>
+  /* Estilo para a mensagem de sucesso */
+  .success-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #007BFF;
+    font-size: 30px;
+    z-index: 9999;
+    font-weight: bold;
+    text-shadow:
+      2px 2px 0px #ffffff,
+      /* Borda superior e à direita */
+      -2px -2px 0px #ffffff,
+      /* Borda inferior e à esquerda */
+      2px -2px 0px #ffffff,
+      /* Borda inferior e à direita */
+      -2px 2px 0px #ffffff;
+    /* Borda superior e à esquerda */
+  }
 
-        /* Estilo para a mensagem de erro */
-        .error {
-            color: red;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-    </style>
+  /* Estilo para a mensagem de erro */
+  .error {
+    color: red;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  body,
+  html {
+
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: rgb(80, 81, 254);
+    background: linear-gradient(0deg, rgba(80, 81, 254, 1) 0%, rgba(255, 255, 255, 1) 100%);
+  }
+  </style>
 </head>
+
 <body>
-    <div class="login-container">
-        <img src="../imagens/SISMARINAS.png" alt="Logo da Marinha" style="width: 50%;">
-        <h2>Cadastramento de Marina</h2>
-        <form method="POST">
-            <label for="nome">Nome da Marina:</label>
-            <input type="text" id="nome" name="nome" required>
+  <div class="login-container">
+    <img src="../imagens/SISMARINAS.png" alt="Logo da Marinha" style="width: 50%;">
+    <h2>Cadastramento de Marina</h2>
+    <form method="POST">
+      <label for="nome">Nome da Marina:</label>
+      <input type="text" id="nome" name="nome" required>
 
-            <label for="cnpj">CNPJ:</label>
-            <input type="text" id="cnpj" name="cnpj" maxlength="18" oninput="mascaraCNPJ(this)" required>
+      <label for="cnpj">CNPJ:</label>
+      <input type="text" id="cnpj" name="cnpj" maxlength="18" oninput="mascaraCNPJ(this)" required>
 
-            <label for="endereco">Endereço:</label>
-            <input type="text" id="endereco" name="endereco">
+      <label for="endereco">Endereço:</label>
+      <input type="text" id="endereco" name="endereco">
 
-            <label for="contato">Contato (máx. 50 caracteres):</label>
-            <input type="text" id="contato" name="contato" maxlength="50">
+      <label for="contato">Contato (máx. 50 caracteres):</label>
+      <input type="text" id="contato" name="contato" maxlength="50">
 
-            <label for="dt_validade">Data de Validade do Certificado:</label>
-            <input type="date" id="dt_validade" name="dt_validade" required>
+      <label for="dt_validade">Data de Validade do Certificado:</label>
+      <input type="date" id="dt_validade" name="dt_validade" required>
 
-            <button type="submit">Cadastrar</button>
-            <button onclick="window.location.href='op.php';">Voltar</button>
-            <h5>Desenvolvido por MN-RC DIAS 24.0729.23</h5>
-        </form>
+      <button type="submit">Cadastrar</button>
+      <button onclick="window.location.href='op.php';">Voltar</button>
+      <h5>Desenvolvido por MN-RC DIAS 24.0729.23</h5>
+    </form>
 
-        <!-- Exibe a mensagem de erro, se houver -->
-        <?php if (isset($erro)): ?>
-            <p class="error"><?php echo $erro; ?></p>
-        <?php endif; ?>
-    </div>
-
-    <!-- Exibe a mensagem de sucesso, se houver -->
-    <?php if (isset($successMessage)): ?>
-        <div class="success-message">
-            <?php echo $successMessage; ?>
-            <script>
-                redirectToOp(); // Chama a função para redirecionar após 2 segundos
-            </script>
-        </div>
+    <!-- Exibe a mensagem de erro, se houver -->
+    <?php if (isset($erro)): ?>
+    <p class="error"><?php echo $erro; ?></p>
     <?php endif; ?>
+  </div>
+
+  <!-- Exibe a mensagem de sucesso, se houver -->
+  <?php if (isset($successMessage)): ?>
+  <div class="success-message">
+    <?php echo $successMessage; ?>
+    <script>
+    redirectToOp(); // Chama a função para redirecionar após 2 segundos
+    </script>
+  </div>
+  <?php endif; ?>
 </body>
+
 </html>

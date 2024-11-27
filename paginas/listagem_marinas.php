@@ -38,6 +38,12 @@ if ($id_marina) {
     $stmt_count->execute();
     $total_embarcacoes = $stmt_count->fetch(PDO::FETCH_ASSOC)['total_embarcacoes'];
 
+    // Conta o total de embarcações/motoaquáticas associadas à marina
+    $qtd_marinas = "SELECT COUNT(*) AS total_marinas FROM marinas";
+    $stmt_marinas = $conexao->prepare($qtd_marinas);
+    $stmt_marinas->execute();
+    $total_marinas = $stmt_marinas->fetch(PDO::FETCH_ASSOC)['total_marinas'];
+
     // Recupera o nome da marina para exibir no título
     $query_marina = "SELECT nome FROM marinas WHERE id = :id_marina";
     $stmt_marina = $conexao->prepare($query_marina);
@@ -64,93 +70,112 @@ if ($id_marina) {
 
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listagem de Marinas</title>
-    <link rel="stylesheet" href="../cssPaginas/lista.css">
-    <style>
-        .expired {
-            color: red;
-            font-weight: bold; /* Cor para itens expirados */
-        }
-        .ilegal {
-            color: red; /* Cor para status ilegal */
-            font-weight: bold; /* Deixar em negrito para destaque */
-        }
 
-        
-    </style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listagem de Marinas</title>
+  <link rel="stylesheet" href="../cssPaginas/lista.css">
+  <style>
+  .expired {
+    color: red;
+    font-weight: bold;
+    /* Cor para itens expirados */
+  }
+
+  .ilegal {
+    color: red;
+    /* Cor para status ilegal */
+    font-weight: bold;
+    /* Deixar em negrito para destaque */
+  }
+
+  body,
+  html {
+
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: rgb(80, 81, 254);
+    background: linear-gradient(0deg, rgba(80, 81, 254, 1) 0%, rgba(255, 255, 255, 1) 100%);
+  }
+  </style>
 </head>
+
 <body>
-    <div class="login-container">
-        <?php if ($id_marina): ?>
-            <h2>Embarcações na Marina "<?php echo $marina['nome']; ?>"</h2>
-            <h4 style="text-align:center; margin-bottom:20px;">Total de Embarcações/Motoaquáticas: <?php echo $total_embarcacoes; ?></h4>
-            <table>
-                <tr>
-                    <th>NOME</th>
-                    <th>NÚMERO DE INSCRIÇÃO</th>
-                    <th>TIPO</th>
-                    <th>OBSERVAÇÃO</th>
-                    <th>STATUS</th>
-                    <th>DATA DE VENCIMENTO</th>
-                    <th>AÇÕES</th>
-                </tr>
-                <?php foreach ($embarcacoes as $embarcacao): 
+  <div class="login-container">
+    <?php if ($id_marina): ?>
+    <h2>Embarcações na Marina "<?php echo $marina['nome']; ?>"</h2>
+    <h4 style="text-align:center; margin-bottom:20px;">Total de Embarcações/Motoaquáticas:
+      <?php echo $total_embarcacoes; ?></h4>
+    <table>
+      <tr>
+        <th>NOME</th>
+        <th>NÚMERO DE INSCRIÇÃO</th>
+        <th>TIPO</th>
+        <th>OBSERVAÇÃO</th>
+        <th>STATUS</th>
+        <th>DATA DE VENCIMENTO</th>
+        <th>AÇÕES</th>
+      </tr>
+      <?php foreach ($embarcacoes as $embarcacao): 
                     $data_vencimento = $embarcacao['dt_validade'] ? new DateTime($embarcacao['dt_validade']) : null;
                     $data_venc_formatada = $data_vencimento ? $data_vencimento->format('d/m/Y') : '---';
                     $classe_expirada = ($data_vencimento && $data_vencimento < new DateTime()) ? 'expired' : '';
                     $classe_status = (strtoupper($embarcacao['status']) === 'ILEGAL') ? 'ilegal' : '';
                 ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($embarcacao['nome']); ?></td>
-                        <td><?php echo htmlspecialchars($embarcacao['numero_serie']); ?></td>
-                        <td><?php echo htmlspecialchars($embarcacao['tipo']); ?></td>
-                        <td><?php echo htmlspecialchars($embarcacao['observacao']); ?></td>
-                        <td class="<?php echo $classe_status; ?>"><?php echo strtoupper(htmlspecialchars($embarcacao['status'])); ?></td>
-                        <td class="<?php echo $classe_expirada; ?>"><?php echo $data_venc_formatada; ?></td>
-                        <td>
-                            <a href="editar_emb.php?id=<?php echo $embarcacao['id']; ?>">Alterar Dados</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </table>
-            <a href="listagem_marinas.php">Voltar para a listagem de marinas</a>
-        <?php else: ?>
-            <h2>Lista de Marinas</h2>
-            <table>
-                <tr>
-                    <th>NOME DA MARINA</th>
-                    <th>CNPJ</th>
-                    <th>MUNICÍPIO</th>
-                    <th>VAL. DO CERTIFICADO</th>
-                    <th>AÇÃO</th>
-                </tr>
-                <?php foreach ($marinas as $marina): 
+      <tr>
+        <td><?php echo htmlspecialchars($embarcacao['nome']); ?></td>
+        <td><?php echo htmlspecialchars($embarcacao['numero_serie']); ?></td>
+        <td><?php echo htmlspecialchars($embarcacao['tipo']); ?></td>
+        <td><?php echo htmlspecialchars($embarcacao['observacao']); ?></td>
+        <td class="<?php echo $classe_status; ?>"><?php echo strtoupper(htmlspecialchars($embarcacao['status'])); ?>
+        </td>
+        <td class="<?php echo $classe_expirada; ?>"><?php echo $data_venc_formatada; ?></td>
+        <td>
+          <a href="editar_emb.php?id=<?php echo $embarcacao['id']; ?>">Alterar Dados</a>
+        </td>
+      </tr>
+      <?php endforeach; ?>
+    </table>
+    <a href="listagem_marinas.php">Voltar para a listagem de marinas</a>
+    <?php else: ?>
+    <h2>Lista de Marinas</h2>
+    <h4 style="text-align:center; margin-bottom:20px;">Total de Marinas Cadastradas: <?php echo $total_marinas; ?></h4>
+
+    <table>
+      <tr>
+        <th>NOME DA MARINA</th>
+        <th>CNPJ</th>
+        <th>MUNICÍPIO</th>
+        <th>VAL. DO CERTIFICADO</th>
+        <th>AÇÃO</th>
+      </tr>
+      <?php foreach ($marinas as $marina): 
                     $data_validade = new DateTime($marina['dt_validade']);
                     $hoje = new DateTime();
                     $linha_expirada = ($data_validade < $hoje) ? 'expired' : '';
                 ?>
-                    <tr>
-                        <td><?php echo $marina['nome']; ?></td>
-                        <td><?php echo $marina['cnpj']; ?></td>
-                        <td><?php echo $marina['endereco']; ?></td>
-                        <td class="<?php echo $linha_expirada; ?>">
-                            <?php echo $data_validade->format('d/m/Y'); ?>
-                        </td>
-                        <td>
-                            <a href="listagem_marinas.php?id_marina=<?php echo $marina['id']; ?>">Ver Embarcações</a> |
-                            <a href="editar_marina.php?id_marina=<?php echo $marina['id']; ?>">Alterar Dados</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </table>
-        <?php endif; ?>
-        <div class="button" style="margin: 0 auto; display: grid;">
-            <a href="op.php" id="voltar">Voltar</a>      
-        </div>
-        <h5>Desenvolvido por MN-RC DIAS 24.0729.23</h5>
+      <tr>
+        <td><?php echo $marina['nome']; ?></td>
+        <td><?php echo $marina['cnpj']; ?></td>
+        <td><?php echo $marina['endereco']; ?></td>
+        <td class="<?php echo $linha_expirada; ?>">
+          <?php echo $data_validade->format('d/m/Y'); ?>
+        </td>
+        <td>
+          <a href="listagem_marinas.php?id_marina=<?php echo $marina['id']; ?>">Ver Embarcações</a> |
+          <a href="editar_marina.php?id_marina=<?php echo $marina['id']; ?>">Alterar Dados</a>
+        </td>
+      </tr>
+      <?php endforeach; ?>
+    </table>
+    <?php endif; ?>
+    <div class="button" style="margin: 0 auto; display: grid;">
+      <a href="op.php" id="voltar">Voltar</a>
     </div>
+    <h5>Desenvolvido por MN-RC DIAS 24.0729.23</h5>
+  </div>
 </body>
+
 </html>
