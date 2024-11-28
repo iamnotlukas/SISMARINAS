@@ -84,6 +84,7 @@ include '../ConexaoBanco/conexao.php'; // Inclua a conexão
       <a href="gerar_pdf.php">Gerar PDF das Marinas Cadastradas</a>
       <li><a href="gerar_pdf_marinas_expiradas.php">Gerar PDF de Marinas com certificado vencido</a></li>
       <li><a href="gerar_pdf_embarcacoes_ilegais.php">Gerar PDF EMB / MTA Ilegais</a></li>
+      <li><a href="busca.php">Sistema de Busca</a></li>
     </ul>
     <h5 style="text-align:center;">Desenvolvido por MN-RC DIAS 24.0729.23</h5>
   </div>
