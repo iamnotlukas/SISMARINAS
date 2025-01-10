@@ -66,12 +66,12 @@ th {
 td {
   padding: 12px;
   text-align: center;
-  border: 1px solid #ddd;
+  border: 1px solid #bcb7b7;
 }
 
 /* Linhas alternadas na tabela para melhor leitura */
 tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: #f8eded;
 }
 
 /* Estilo geral para links */
@@ -86,7 +86,7 @@ a {
 }
 
 /* Efeito hover nos links */
-a:hover {
+a:hover {       
   background-color: #007BFF;
   color: white;
 }

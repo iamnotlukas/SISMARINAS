@@ -17,7 +17,7 @@ include '../ConexaoBanco/conexao.php'; // Inclua a conexão
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DiasSmartSys - Opções do Administrador</title>
+  <title>SISMARINAs - Início</title>
   <link rel="stylesheet" href="../cssPaginas/op.css">
   <style>
   .images-container {

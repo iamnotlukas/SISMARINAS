@@ -36,11 +36,11 @@ $pdf->SetTitle('Marinas com Prazo de Validade Expirado');
 $pdf->SetMargins(10, 15, 10); // Margens laterais reduzidas
 $pdf->SetAutoPageBreak(true, 20);
 $pdf->AddPage();
-$pdf->Ln(22);
+$pdf->Ln(30);
 
 // Consulta ao banco de dados
 $query = "
-    SELECT nome, cnpj, endereco, dt_validade
+    SELECT nome, contato, endereco, dt_validade
     FROM marinas
     WHERE dt_validade < CURDATE()
     ORDER BY nome ASC";
@@ -70,7 +70,7 @@ $html = '
     <thead>
         <tr>
             <th>Nome</th>
-            <th>CNPJ</th>
+            <th>Contato</th>
             <th>Endereço</th>
             <th>Validade</th>
         </tr>
@@ -83,7 +83,7 @@ if ($marinas) {
         $html .= '
         <tr>
             <td>' . htmlspecialchars($marina['nome']) . '</td>
-            <td>' . htmlspecialchars($marina['cnpj']) . '</td>
+            <td>' . htmlspecialchars($marina['contato']) . '</td>
             <td>' . htmlspecialchars($marina['endereco']) . '</td>
             <td>' . date('d/m/Y', strtotime($marina['dt_validade'])) . '</td>
         </tr>';

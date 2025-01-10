@@ -28,13 +28,13 @@ $pdf = new MYPDF();
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('MN-RC DIAS');
 $pdf->SetTitle('Listagem de Marinas');
-$pdf->SetMargins(10, 15, 10); // Margens laterais reduzidas
+$pdf->SetMargins(5, 15, 5); // Margens laterais reduzidas
 $pdf->SetAutoPageBreak(true, 20);
 $pdf->AddPage();
-$pdf->Ln(24);
+$pdf->Ln(30);
 
 // Consulta para obter as marinas cadastradas, excluindo a marina "EMB / MTA NÃO GARAGIADAS"
-$query = "SELECT nome, cnpj, endereco FROM marinas WHERE nome != 'EMB / MTA NÃO GARAGIADAS'";
+$query = "SELECT nome, cnpj, endereco, contato FROM marinas WHERE nome != 'EMB / MTA NÃO GARAGIADAS'";
 $stmt = $conexao->prepare($query);
 $stmt->execute();
 $marinas = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -57,9 +57,10 @@ $html = '
         text-align: center;
         padding: 5px;
     }
-    th:nth-child(1) { width: 50%; } /* Nome da Marina */
-    th:nth-child(2) { width: 35%; } /* Endereço */
-    th:nth-child(3) { width: 15%; } /* CNPJ */
+    th:nth-child(1) { width: 35%; } /* Nome da Marina */
+    th:nth-child(2) { width: 30%; } /* Endereço */
+    th:nth-child(3) { width: 20%; } /* CNPJ */
+    th:nth-child(4) { width: 15%; } /* Contato */
 </style>
 
 <table border="1">
@@ -67,7 +68,8 @@ $html = '
         <tr>
             <th>Nome da Marina</th>
             <th>Endereço</th>
-            <th style="width:fit-content;">CNPJ</th>
+            <th>CNPJ</th>
+            <th>Contato</th>
         </tr>
     </thead>
     <tbody>';
@@ -80,12 +82,13 @@ if ($marinas) {
             <td>' . htmlspecialchars($marina['nome']) . '</td>
             <td>' . htmlspecialchars($marina['endereco']) . '</td>
             <td>' . htmlspecialchars($marina['cnpj']) . '</td>
+            <td>' . htmlspecialchars($marina['contato']) . '</td>
         </tr>';
     }
 } else {
     $html .= '
     <tr>
-        <td colspan="3" align="center">Não há marinas cadastradas.</td>
+        <td colspan="4" align="center">Não há marinas cadastradas.</td>
     </tr>';
 }
 

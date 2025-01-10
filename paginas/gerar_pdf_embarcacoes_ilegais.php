@@ -5,7 +5,7 @@ if (!isset($_SESSION['autenticado']) || $_SESSION['autenticado'] !== true) {
     exit();
 }
 
-require_once('../tcpdf/tcpdf.php'); // Inclua o caminho correto para a biblioteca TCPDF
+require_once('../tcpdf/tcpdf.php');
 include '../ConexaoBanco/conexao.php';
 
 // Cria uma instância do objeto TCPDF
@@ -15,28 +15,28 @@ $pdf = new TCPDF();
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('MN-RC DIAS');
 $pdf->SetTitle('SISMARINAS');
-$pdf->SetSubject('Relatório de Embarcações Ilegais');
-$pdf->SetMargins(10, 15, 10); // Margens laterais reduzidas
+$pdf->SetSubject('Relatório de Embarcações Irregulares');
+$pdf->SetMargins(10, 15, 10);
 $pdf->setPrintHeader(false);
 $pdf->AddPage();
 
-// Adicionando as imagens no topo com largura reduzida, mantendo proporção
-$pdf->Image('../imagens/cpsp.jpg', 15, 8, 20, 0, 'JPG'); // Imagem à esquerda
-$pdf->Image('../imagens/newMarinha.jpg', 175, 11, 20, 0, 'JPG'); // Imagem à direita
+// Adicionando as imagens no topo
+$pdf->Image('../imagens/cpsp.jpg', 15, 8, 20, 0, 'JPG');
+$pdf->Image('../imagens/newMarinha.jpg', 175, 11, 20, 0, 'JPG');
 
 // Título do documento
 $pdf->SetFont('Helvetica', 'B', 18);
-$pdf->Cell(0, 10, 'RELAÇÃO DE EMB E/OU MTA ILEGAIS', 0, 1, 'C');
+$pdf->Cell(0, 10, 'RELAÇÃO DE EMB E/OU MTA IRREGULARES', 0, 1, 'C');
 
 // Adiciona uma linha de separação
-$pdf->Ln(11);
+$pdf->Ln(25);
 
 // Consulta para obter as embarcações ilegais
 $query = "
-    SELECT e.nome AS embarcacao_nome, e.numero_serie, m.nome AS marina_nome
+    SELECT e.nome AS embarcacao_nome, e.numero_serie, m.nome AS marina_nome, m.contato AS contato
     FROM embarcacoes e
     INNER JOIN marinas m ON e.id_marina = m.id
-    WHERE e.status = 'ILEGAL'
+    WHERE e.status = 'IRREGULAR'
     ORDER BY e.nome ASC";
 $stmt = $conexao->prepare($query);
 $stmt->execute();
@@ -44,31 +44,32 @@ $embarcacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Estilo para os cabeçalhos da tabela
 $pdf->SetFont('Helvetica', 'B', 12);
-$pdf->SetFillColor(0, 102, 204); // Cor de fundo azul para os cabeçalhos
-$pdf->SetTextColor(255, 255, 255); // Cor do texto branco
+$pdf->SetFillColor(0, 102, 204);
+$pdf->SetTextColor(255, 255, 255);
 
-// Ajuste das larguras das colunas para preencher mais a página
-$widths = [60, 50, 80]; // Largura das colunas
+$widths = [60, 40, 65, 30];
 
 // Cabeçalhos da tabela
-$pdf->Cell($widths[0], 8, 'Nome da Embarcação', 1, 0, 'C', 1); // Altura reduzida para 8
-$pdf->Cell($widths[1], 8, 'N° de Inscrição', 1, 0, 'C', 1); // Altura reduzida para 8
-$pdf->Cell($widths[2], 8, 'Marina', 1, 1, 'C', 1); // Altura reduzida para 8
+foreach (['Nome da Embarcação', 'N° de Inscrição', 'Marina', 'Contato'] as $i => $header) {
+    $pdf->Cell($widths[$i], 8, $header, 1, 0, 'C', 1);
+}
+$pdf->Ln(); // Fecha a linha
 
 // Resetando a cor do texto para o corpo
-$pdf->SetTextColor(0, 0, 0); // Texto preto
+$pdf->SetTextColor(0, 0, 0);
 
-// Corpo da tabela com os dados das embarcações ilegais
-$pdf->SetFont('Helvetica', '', 10); // Fonte menor para o corpo da tabela
+// Corpo da tabela com os dados
+$pdf->SetFont('Helvetica', '', 10);
 foreach ($embarcacoes as $embarcacao) {
-    $pdf->Cell($widths[0], 6, $embarcacao['embarcacao_nome'], 1, 0, 'C'); // Altura reduzida para 6
-    $pdf->Cell($widths[1], 6, $embarcacao['numero_serie'], 1, 0, 'C'); // Altura reduzida para 6
-    $pdf->Cell($widths[2], 6, $embarcacao['marina_nome'], 1, 1, 'C'); // Altura reduzida para 6
+    $pdf->Cell($widths[0], 6, $embarcacao['embarcacao_nome'], 1, 0, 'C');
+    $pdf->Cell($widths[1], 6, $embarcacao['numero_serie'], 1, 0, 'C');
+    $pdf->Cell($widths[2], 6, $embarcacao['marina_nome'], 1, 0, 'C');
+    $pdf->Cell($widths[3], 6, $embarcacao['contato'], 1, 1, 'C'); // Fecha a linha
 }
 
 // Adiciona uma linha no final
 $pdf->Ln(5);
 
 // Exibe o PDF no navegador
-$pdf->Output('embarcacoes_ilegais.pdf', 'I');
+$pdf->Output('embarcacoes_irregulares.pdf', 'I');
 ?>

@@ -12,7 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['termo'])) {
                 e.numero_serie AS numero_inscricao,
                 m.nome AS nome_marina,
                 m.cnpj AS cnpj_marina,
-                m.endereco AS local_marina
+                m.endereco AS local_marina,
+                m.contato AS contato
             FROM embarcacoes e
             INNER JOIN marinas m ON e.id_marina = m.id
             WHERE e.nome LIKE :termo
@@ -36,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['termo'])) {
                         <th>Nome da Marina</th>
                         <th>CNPJ da Marina</th>
                         <th>Local da Marina</th>
+                        <th>Contato</th>
                     </tr>
                   </thead>";
             echo "<tbody>";
@@ -46,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['termo'])) {
                 echo "<td>" . htmlspecialchars($row['nome_marina']) . "</td>";
                 echo "<td class='cnpj'>" . htmlspecialchars($row['cnpj_marina']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['local_marina']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['contato']) . "</td>";
                 echo "</tr>";
             }
             echo "</tbody></table>";

@@ -65,6 +65,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     input.value = valor.substring(0, 18); // Limita ao comprimento do CNPJ com máscara
   }
 
+  function mascaraTelefone(input) {
+    let valor = input.value.replace(/\D/g, ''); // Remove tudo que não é número
+    valor = valor.replace(/^(\d{2})(\d)/, "($1) $2");
+    valor = valor.replace(/(\d{4})(\d)/, "$1-$2");
+    input.value = valor.substring(0, 15); // Limita ao comprimento do telefone com máscara
+  }
+
   // Redireciona após a exibição da mensagem
   function redirectToOp() {
     setTimeout(function() {
@@ -132,8 +139,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <label for="endereco">Endereço:</label>
       <input type="text" id="endereco" name="endereco">
 
-      <label for="contato">Contato (máx. 50 caracteres):</label>
-      <input type="text" id="contato" name="contato" maxlength="50">
+      <label for="contato">Contato:</label>
+      <input type="text" id="contato" name="contato" maxlength="50" oninput="mascaraTelefone(this)">
 
       <label for="dt_validade">Data de Validade do Certificado:</label>
       <input type="date" id="dt_validade" name="dt_validade" required>

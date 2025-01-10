@@ -12,7 +12,7 @@ include '../ConexaoBanco/conexao.php';
 
 // Função para atualizar o status para "ILEGAL" se a data de vencimento tiver expirado
 function atualizarStatusIlegal($conexao) {
-    $query = "UPDATE embarcacoes SET status = 'ILEGAL' WHERE dt_validade < CURDATE() AND status = 'LEGAL'";
+    $query = "UPDATE embarcacoes SET status = 'IRREGULAR  ' WHERE dt_validade < CURDATE() AND status = 'REGULAR'";
     $stmt = $conexao->prepare($query);
     $stmt->execute();
 }
@@ -53,7 +53,7 @@ if ($id_marina) {
 } else {
     // Exibe todas as marinas cadastradas
     $query = "
-        SELECT id, nome, cnpj, endereco, dt_validade 
+        SELECT id, nome, cnpj, endereco, contato, dt_validade 
         FROM marinas 
         ORDER BY 
             CASE 
@@ -77,6 +77,21 @@ if ($id_marina) {
   <title>Listagem de Marinas</title>
   <link rel="stylesheet" href="../cssPaginas/lista.css">
   <style>
+  tr:nth-child(even) {
+    background-color: #e1e1e1;
+  }
+
+  tr:nth-child(odd) {
+    background-color: white;
+  }
+
+
+  td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #bcb7b7;
+  }
+
   .expired {
     color: red;
     font-weight: bold;
@@ -122,7 +137,7 @@ if ($id_marina) {
                     $data_vencimento = $embarcacao['dt_validade'] ? new DateTime($embarcacao['dt_validade']) : null;
                     $data_venc_formatada = $data_vencimento ? $data_vencimento->format('d/m/Y') : '---';
                     $classe_expirada = ($data_vencimento && $data_vencimento < new DateTime()) ? 'expired' : '';
-                    $classe_status = (strtoupper($embarcacao['status']) === 'ILEGAL') ? 'ilegal' : '';
+                    $classe_status = (strtoupper($embarcacao['status']) === 'IRREGULAR') ? 'ilegal' : '';
                 ?>
       <tr>
         <td><?php echo htmlspecialchars($embarcacao['nome']); ?></td>
@@ -148,6 +163,7 @@ if ($id_marina) {
         <th>NOME DA MARINA</th>
         <th>CNPJ</th>
         <th>MUNICÍPIO</th>
+        <th>CONTATO</th>
         <th>VAL. DO CERTIFICADO</th>
         <th>AÇÃO</th>
       </tr>
@@ -160,6 +176,7 @@ if ($id_marina) {
         <td><?php echo $marina['nome']; ?></td>
         <td><?php echo $marina['cnpj']; ?></td>
         <td><?php echo $marina['endereco']; ?></td>
+        <td><?php echo $marina['contato']; ?></td>
         <td class="<?php echo $linha_expirada; ?>">
           <?php echo $data_validade->format('d/m/Y'); ?>
         </td>
